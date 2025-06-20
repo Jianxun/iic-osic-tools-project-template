@@ -1,6 +1,6 @@
 {
 	"name": "IIC OSIC Tools (VNC Enabled)",
-	// "image": "hpretl/iic-osic-tools:latest",
+	 //"image": "hpretl/iic-osic-tools:latest",
 	"image": "hpretl/iic-osic-tools:chipathon",
 
 	// Forward ports: container 80 (web/noVNC) to host 8080, container 5901 (VNC) to host 5901
@@ -11,7 +11,9 @@
 
 	// Set environment variables inside the container
 	"containerEnv": {
-		"VNC_PW": "abc123" // Default VNC password, change if needed
+		"VNC_PW": "abc123", // Default VNC password, change if needed
+		"SHELL": "/usr/bin/bash", // Set bash as the default shell
+		"USER": "designer" // Set the user name
 		// "IIC_OSIC_TOOLS_QUIET": "1" // Uncomment to enable quiet mode
 	},
 
@@ -24,7 +26,13 @@
 				// Add other extensions like linters, debuggers, etc.
 			],
 			"settings": {
-				"terminal.integrated.cwd": "/foss/designs"
+				"terminal.integrated.cwd": "/foss/designs",
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/usr/bin/bash"
+					}
+				}
 			}
 		}
 	},
@@ -38,6 +46,7 @@
 	],
 
 	"overrideCommand": false,
+	"postCreateCommand": "echo 'source /dockerstartup/scripts/generate_container_user.sh' >> /headless/.bashrc",
 	// Optional: If you want to use the same Docker run arguments as the scripts
 	"runArgs": [
 		"--rm", // Remove the container when VS Code closes it
