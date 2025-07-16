@@ -1,0 +1,9 @@
+title: "DC Analysis"
+x: 
+  label: "Input Voltage (V)"
+  signal: "v(v-sweep)"
+y:
+  - label: "Output Voltage (V)"
+    signals:
+      OUT: "v(out)"
+      IN:  "v(in)"

@@ -1,0 +1,9 @@
+parameters:
+  dut: ./netlists/ota_5t.spice
+  vdda: 3.3
+  vin_dc: 1.5
+  i_bias: 5e-05
+  corner: typical
+  output_file: results.raw
+
+
