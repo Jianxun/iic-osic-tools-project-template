@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Run the simulation
+echo "Running simulation..."
+ngspice -b -q {{parameters.root}}{{parameters.sim_dir}}/tb_netlist.spice > {{parameters.root}}{{parameters.sim_dir}}/tb_netlist.log

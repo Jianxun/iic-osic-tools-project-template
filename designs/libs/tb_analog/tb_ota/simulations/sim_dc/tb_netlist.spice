@@ -1,0 +1,32 @@
+* ---------------- Model ----------------
+.include /foss/pdks/gf180mcuD/libs.tech/ngspice/design.ngspice
+.lib /foss/pdks/gf180mcuD/libs.tech/ngspice/sm141064.ngspice typical
+
+* ---------------- Power Supplies ----------------
+V_vssa vssa GND 0
+V_vdda vdda vssa 3.3
+
+* ---------------- Bias Current ----------------
+I_bias vdda i_bias 5e-05
+
+* ---------------- Feedback Connections ----------------
+V_jumper_fb out in_n 0
+V_jumper_in in in_p 0
+
+* ---------------- Stimulus ----------------
+V_src in vssa 1.5
+
+* ---------------- Simulation DC sweep ----------------
+.control
+save all
+DC V_src 0 3.3 0.01
+write /foss/designs/libs/tb_analog/tb_ota/simulations/sim_dc/results.raw
+.endc
+
+.include /foss/designs/libs/tb_analog/tb_ota/./netlists/ota_5t.spice
+
+# DUT
+*.subckt ota_5t vdd out in_p in_n i_bias vss
+*.PININFO in_p:I in_n:I i_bias:I vdd:I vss:I out:O
+X_DUT vdda out in_p in_n i_bias vssa ota_5t
+
