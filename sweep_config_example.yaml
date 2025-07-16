@@ -1,0 +1,44 @@
+# Example sweep configuration - extends existing config.yaml format
+parameters:
+  # Base parameters (unchanged from current format)
+  dut: ./netlists/ota_5t.spice
+  vdda: 3.3
+  vin_dc: 1.5
+  i_bias: 5e-05
+  corner: typical
+  output_file: results.raw
+
+# New sweep section (optional - maintains backward compatibility)
+sweep:
+  # Sweep definition
+  parameters:
+    # Linear sweep example
+    vdda:
+      type: linear
+      start: 2.5
+      stop: 3.6
+      steps: 12
+    
+    # Logarithmic sweep example  
+    i_bias:
+      type: log
+      start: 1e-6
+      stop: 1e-4
+      steps: 20
+    
+    # List-based sweep example
+    corner:
+      type: list
+      values: [typical, slow, fast]
+  
+  # Sweep execution options
+  options:
+    parallel: true
+    max_workers: 4
+    fail_fast: false
+    
+  # Metadata generation
+  metadata:
+    output_file: sweep_metadata.csv
+    include_paths: true
+    include_timestamps: true
