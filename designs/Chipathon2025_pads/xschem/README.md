@@ -20,3 +20,6 @@ In this schematic, it is possible to observe 3 different configurations based on
 1) Bidirectional
 2) Output Enabled
 3) Input Enabled
+
+## Simulation files of the tiehigh and tielow cells.
+**test_tieH_L.sch:** Transient simulation of the tiehigh and tielow cells.
