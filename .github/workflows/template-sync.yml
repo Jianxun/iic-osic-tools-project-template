@@ -1,0 +1,117 @@
+name: Template Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      template_repository:
+        description: Template repository in owner/name format
+        required: false
+        default: Jianxun/iic-osic-tools-project-template
+      template_ref:
+        description: Template branch or tag to sync from
+        required: false
+        default: main
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "template-sync-bot"
+          git config user.email "template-sync-bot@users.noreply.github.com"
+
+      - name: Merge template changes into sync branch
+        id: merge
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          TEMPLATE_REPOSITORY: ${{ inputs.template_repository }}
+          TEMPLATE_REF: ${{ inputs.template_ref }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="template-sync/${TEMPLATE_REF//\//-}-$(date +%Y%m%d)-${GITHUB_RUN_NUMBER}"
+          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
+
+          git remote add template "https://github.com/${TEMPLATE_REPOSITORY}.git"
+          git fetch --no-tags template "${TEMPLATE_REF}"
+          git fetch --no-tags origin "${DEFAULT_BRANCH}"
+
+          git checkout -B "${BRANCH}" "origin/${DEFAULT_BRANCH}"
+
+          if git merge --no-ff --no-edit "template/${TEMPLATE_REF}"; then
+            if git diff --quiet "origin/${DEFAULT_BRANCH}..HEAD"; then
+              echo "status=up_to_date" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "status=merged" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          echo "status=conflict" >> "${GITHUB_OUTPUT}"
+
+      - name: Push sync branch
+        if: steps.merge.outputs.status == 'merged'
+        run: git push -u origin "${{ steps.merge.outputs.branch }}"
+
+      - name: Create or reuse sync pull request
+        if: steps.merge.outputs.status == 'merged'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          TEMPLATE_REPOSITORY: ${{ inputs.template_repository }}
+          TEMPLATE_REF: ${{ inputs.template_ref }}
+          SYNC_BRANCH: ${{ steps.merge.outputs.branch }}
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="$(gh pr list --state open --base "${DEFAULT_BRANCH}" --head "${SYNC_BRANCH}" --json number --jq '.[0].number // empty')"
+          if [ -n "${PR_NUMBER}" ]; then
+            echo "PR already exists: #${PR_NUMBER}"
+            exit 0
+          fi
+
+          gh pr create \
+            --base "${DEFAULT_BRANCH}" \
+            --head "${SYNC_BRANCH}" \
+            --title "Template sync from ${TEMPLATE_REPOSITORY}@${TEMPLATE_REF}" \
+            --body "$(printf '## Summary\n- Sync template updates from %s@%s\n- This PR was created automatically by the Template Sync workflow.\n\n## Student instructions\n1. Review the changed files.\n2. Click **Merge pull request**.\n3. Pull latest changes in GitHub Desktop.\n' "${TEMPLATE_REPOSITORY}" "${TEMPLATE_REF}")"
+
+      - name: Create conflict issue
+        if: steps.merge.outputs.status == 'conflict'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEMPLATE_REPOSITORY: ${{ inputs.template_repository }}
+          TEMPLATE_REF: ${{ inputs.template_ref }}
+        run: |
+          set -euo pipefail
+
+          ISSUE_TITLE="Template sync conflict (${TEMPLATE_REPOSITORY}@${TEMPLATE_REF})"
+          ISSUE_NUMBER="$(gh issue list --state open --search "${ISSUE_TITLE} in:title" --json number --jq '.[0].number // empty')"
+          if [ -n "${ISSUE_NUMBER}" ]; then
+            echo "Conflict issue already open: #${ISSUE_NUMBER}"
+            exit 0
+          fi
+
+          gh issue create \
+            --title "${ISSUE_TITLE}" \
+            --body "$(printf 'Automatic template sync hit merge conflicts.\n\n- Template source: %s@%s\n- Action run: https://github.com/%s/actions/runs/%s\n\nA maintainer should resolve this manually and open a PR.\n' "${TEMPLATE_REPOSITORY}" "${TEMPLATE_REF}" "${GITHUB_REPOSITORY}" "${GITHUB_RUN_ID}")"
+
+      - name: Job summary
+        run: |
+          {
+            echo "## Template Sync Result"
+            echo "- Status: ${{ steps.merge.outputs.status }}"
+            echo "- Branch: ${{ steps.merge.outputs.branch }}"
+            echo "- Template: ${{ inputs.template_repository }}@${{ inputs.template_ref }}"
+          } >> "${GITHUB_STEP_SUMMARY}"
