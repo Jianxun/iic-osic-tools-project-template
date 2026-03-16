@@ -28,6 +28,7 @@ __pycache__/
 *.net
 
 designs/simulations/
+designs/libs/libs.json
 
 # devcontainer
 .devcontainer
