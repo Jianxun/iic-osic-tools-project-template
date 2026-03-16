@@ -7,6 +7,12 @@ cd /foss/designs
 
 export PATH="$DESIGNS/scripts:$PATH"
 
+if [ -d "$DESIGNS/workflows" ]; then
+  for wf_dir in "$DESIGNS"/workflows/*; do
+    [ -d "$wf_dir" ] && export PATH="$wf_dir:$PATH"
+  done
+fi
+
 #==============================================================
 # PDK
 # This script is aliased to `iic-pdk` in the .bashrc file
@@ -17,8 +23,12 @@ export PATH="$DESIGNS/scripts:$PATH"
 # Overwrite the xschemrc file to add /foss/designs to the library path
 # This way you won't have missing symbols when starting xschem from a different directory
 # Overriding .bashrc alias for cp to avoid the -i flag
-\cp -f ./.config/.xschem/xschemrc ~/.xschem/xschemrc
+# \cp -f ./.config/.xschem/xschemrc ~/.xschem/xschemrc
 # mkdir -p /headless/.xschem/simulations
+mkdir -p /headless/tmp
+
+# Alias xschem to always start in $DESIGNS/libs
+alias xschem='cd $DESIGNS/libs && xschem'
 
 #==============================================================
 # Klayout
@@ -76,3 +86,6 @@ tree() {
   find "$dir" -maxdepth "$depth" -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
 #==============================================================
+#
+# Avoid using empty .spiceinit file under this directory and use the one located at the home
+unset SPICE_USERINIT_DIR

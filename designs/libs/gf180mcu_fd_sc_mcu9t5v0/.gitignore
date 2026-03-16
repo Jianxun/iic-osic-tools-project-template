@@ -1,0 +1,6 @@
+# Library: gf180mcu_fd_sc_mcu9t5v0 (checkin: false)
+# This library is not checked into version control
+# Run 'ams-compose install' to download this library
+*
+!.gitignore
+!.ams-compose-metadata.yaml

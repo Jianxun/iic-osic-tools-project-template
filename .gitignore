@@ -40,3 +40,10 @@ tools/
 context/
 
 *.gds.backup
+
+# Ignore all virtual environment directories
+.venv/
+venv/
+
+# Ignore all ams-compose lock files
+.ams-compose.lock

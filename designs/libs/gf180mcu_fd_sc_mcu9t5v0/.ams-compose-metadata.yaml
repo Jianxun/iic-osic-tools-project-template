@@ -1,0 +1,16 @@
+ams_compose_version: 0.1.2
+library_name: gf180mcu_fd_sc_mcu9t5v0
+source:
+  repository: https://github.com/Jianxun/gf180mcu_libraries
+  reference: main
+  commit: 3b49e8823be8150aa49deba969c85479fc231c61
+  source_path: xschem/gf180mcu_fd_sc_mcu9t5v0
+license:
+  type: null
+  file: null
+  snippet: null
+compliance_notes:
+- This library was extracted from the source repository listed above.
+- License information is auto-detected and may require manual verification.
+- Original LICENSE file (if found) has been preserved in this directory.
+- For IP compliance questions, refer to the original repository.

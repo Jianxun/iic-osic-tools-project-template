@@ -1,0 +1,6 @@
+# Library: gf180mcu (checkin: false)
+# This library is not checked into version control
+# Run 'ams-compose install' to download this library
+*
+!.gitignore
+!.ams-compose-metadata.yaml

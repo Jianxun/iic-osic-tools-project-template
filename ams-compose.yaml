@@ -1,0 +1,30 @@
+# ams-compose configuration file template
+# For more information, see: https://github.com/Jianxun/ams-compose
+
+# Default directory where libraries will be installed
+library_root: designs/libs
+
+# Library imports - add your dependencies here
+imports:
+
+  gf180mcu:
+    repo: https://github.com/Jianxun/gf180mcu_libraries
+    ref: main
+    source_path: xschem/gf180mcu
+    local_path: designs/libs/gf180mcu
+    checkin: false  
+
+  gf180mcu_fd_sc_mcu9t5v0:
+    repo: https://github.com/Jianxun/gf180mcu_libraries
+    ref: main
+    source_path: xschem/gf180mcu_fd_sc_mcu9t5v0
+    local_path: designs/libs/gf180mcu_fd_sc_mcu9t5v0
+    checkin: false
+    
+  gf180mcu_fd_io:
+    repo: https://github.com/Jianxun/gf180mcu_libraries
+    ref: main
+    source_path: xschem/gf180mcu_fd_io
+    local_path: designs/libs/gf180mcu_fd_io
+    checkin: false
+    

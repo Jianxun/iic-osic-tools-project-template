@@ -1,0 +1,4 @@
+# Exclude all mirror contents from version control
+# Mirrors are local caches and should not be committed
+*
+!.gitignore
