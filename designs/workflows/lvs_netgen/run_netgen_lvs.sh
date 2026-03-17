@@ -26,7 +26,7 @@ echo ${PDK:=gf180mcuD} > /dev/null
 CELL="$1"
 CELL_DIR="$(pwd)"
 LVS_EXT_SCRIPT="${PDK_ROOT}/${PDK}/libs.tech/magic/${PDK}.magicrc"
-LVS_SETUP_SCRIPT="/foss/designs/scripts/${PDK}_setup.tcl"
+LVS_SETUP_SCRIPT="/foss/designs/workflows/lvs_netgen/${PDK}_setup.tcl"
 
 # Input files
 SCH_FILE="${CELL_DIR}/${CELL}.sch"

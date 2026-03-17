@@ -1,0 +1,17 @@
+** sch_path: /foss/designs/libs/analog/swmatrix_Tgate/swmatrix_Tgate.sch
+**.subckt swmatrix_Tgate control T2 T1 VDDd VSSd enable
+*.iopin T1
+*.iopin T2
+*.iopin VDDd
+*.iopin VSSd
+*.ipin control
+*.ipin enable
+XM1 T1 gated_control T2 VSSd nfet_03v3 L=0.28u W=48u nf=6 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0 m=1
+XM2 T1 gated_controlb T2 VDDd pfet_03v3 L=0.28u W=144u nf=18 ad='int((nf+1)/2) * W/nf * 0.18u' as='int((nf+2)/2) * W/nf * 0.18u' pd='2*int((nf+1)/2) * (W/nf + 0.18u)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.18u)' nrd='0.18u / W' nrs='0.18u / W' sa=0 sb=0 sd=0 m=1
+x1 gated_control gated_controlb VDDd VDDd VSSd VSSd gf180mcu_fd_sc_mcu9t5v0__inv_1
+x2 control enable net1 VDDd VDDd VSSd VSSd gf180mcu_fd_sc_mcu9t5v0__nand2_1
+x3 net1 gated_control VDDd VDDd VSSd VSSd gf180mcu_fd_sc_mcu9t5v0__inv_1
+**.ends
+.end

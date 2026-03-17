@@ -3,12 +3,16 @@ library_name: gf180mcu_fd_sc_mcu9t5v0
 source:
   repository: https://github.com/Jianxun/gf180mcu_libraries
   reference: main
-  commit: 3b49e8823be8150aa49deba969c85479fc231c61
+  commit: 2f179374e265b44f72f722b64032ab7116163bad
   source_path: xschem/gf180mcu_fd_sc_mcu9t5v0
 license:
-  type: null
-  file: null
-  snippet: null
+  type: Apache-2.0
+  file: LICENSE
+  snippet: 'Apache License
+
+    Version 2.0, January 2004
+
+    http://www.apache.org/licenses/'
 compliance_notes:
 - This library was extracted from the source repository listed above.
 - License information is auto-detected and may require manual verification.

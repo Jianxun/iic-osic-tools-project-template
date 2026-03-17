@@ -23,7 +23,7 @@ fi
 # Overwrite the xschemrc file to add /foss/designs to the library path
 # This way you won't have missing symbols when starting xschem from a different directory
 # Overriding .bashrc alias for cp to avoid the -i flag
-# \cp -f ./.config/.xschem/xschemrc ~/.xschem/xschemrc
+\cp -f ./.config/.xschem/xschemrc ~/.xschem/xschemrc
 # mkdir -p /headless/.xschem/simulations
 mkdir -p /headless/tmp
 
@@ -34,7 +34,7 @@ alias xschem='cd $DESIGNS/libs && xschem'
 # Klayout
 # export KLAYOUT_PATH=/foss/designs/klayout_lib:$KLAYOUT_PATH
 
-alias klayout='klayout -rm $DESIGNS/scripts/klayout_lib_manager.py -geometry 1600x900+100+50 -e'
+alias klayout='klayout -rm $DESIGNS/workflows/library_manager/klayout_lib_manager.py -geometry 1600x900+100+50 -e'
 
 mkdir -p ~/.klayout/libraries
 

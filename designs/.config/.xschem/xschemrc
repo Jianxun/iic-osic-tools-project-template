@@ -3,11 +3,11 @@ source $env(PDK_ROOT)/$env(PDK)/libs.tech/xschem/xschemrc
 
 #### Flush any previous definition
 # set XSCHEM_LIBRARY_PATH {}
-append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
-append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
+# append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library
+# append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
 # append XSCHEM_LIBRARY_PATH :$env(DESIGNS)
 append XSCHEM_LIBRARY_PATH :$env(DESIGNS)/libs
-append XSCHEM_LIBRARY_PATH :$env(DESIGNS)/libs/gf180mcu_xschem_tech
+#append XSCHEM_LIBRARY_PATH :$env(DESIGNS)/libs/gf180mcu_xschem_tech
 
 set netlist_dir "/foss/designs/simulations"
 

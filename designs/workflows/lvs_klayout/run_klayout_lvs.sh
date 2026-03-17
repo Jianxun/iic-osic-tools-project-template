@@ -67,7 +67,7 @@ echo "LVS_RUN_DIR: $LVS_RUN_DIR"
 echo ">>> Step 1: Generating LVS netlist..."
 xschem_netlisting.sh --lvs --netlist_dir "$LVS_RUN_DIR" "$SCH_FILE"
 # Append standard cell library include for LVS
-echo ".include /foss/designs/libs/gf180mcu_fd_sc_mcu9t5v0_symbols/lvs/gf180mcu_fd_sc_mcu9t5v0_lvs.spice" >> "$LVS_NETLIST"
+echo ".include /foss/designs/libs/gf180mcu_fd_sc_mcu9t5v0/lvs/gf180mcu_fd_sc_mcu9t5v0_lvs.spice" >> "$LVS_NETLIST"
 echo ""
 
 # Step 2: Prepare GDS (strip labels or copy)

@@ -48,3 +48,6 @@ venv/
 
 # Ignore all ams-compose lock files
 .ams-compose.lock
+
+klayout_lvs_run/
+netgen_lvs_run/
