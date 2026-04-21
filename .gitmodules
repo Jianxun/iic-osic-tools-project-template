@@ -1,0 +1,3 @@
+[submodule "designs/gLayout"]
+	path = designs/gLayout
+	url = git@github.com:ReaLLMASIC/gLayout.git
