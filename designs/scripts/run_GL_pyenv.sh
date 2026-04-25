@@ -22,9 +22,12 @@ else
 
     # Download and install pyenv
     if [ -d $HOME/.pyenv ]; then
-	    echo "pyenv already installed"
+	      echo "pyenv already installed"
     else
-	    curl -fsSL https://pyenv.run | bash
+	      curl -fsSL https://pyenv.run | bash
+        echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+        echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+        echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
     fi
 
     # Source Conda
@@ -53,7 +56,16 @@ else
     python -m ipykernel install --user --name="$ENV_NAME"
 
     # Pip packages
-    pip install -e /foss/designs/gLayout
+
+    # Check if glayout is cloned
+    
+    if [ -d /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER} ]; then
+        echo "gLayout folder found under /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER}"
+        pip install -e /foss/designs/${GLAYOUT_PATH}/${GLAYOUT_FOLDER}
+    else
+        echo "gLayout repo not found, please make sure you have cloned it under designs/${GLAYOUT_PATH} foler"
+    fi 
+
     pip install "klayout>=0.28,<0.29"
     pip install svgutils
 
