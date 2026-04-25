@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # ========================================================================
 # Start script for DIC docker images (VNC)
 #
@@ -24,6 +24,11 @@
 # Modifications by Jianxun Zhu:
 # - Added: export DESIGNS="$(pwd)/designs" at the beginning to set designs
 #   directory to current directory's designs folder
+# Modifications by Luighi Viton-Zorrilla:
+# - Added: support for an .env file to load environment variables
+# - Added: support for gLatout installation by GLAYOUT_INSTALL
+# GLAYOUT_REPOSITORY and GLAYOUT_FOLDER env variables
+# - Added: -e flag to bash to stop on error
 # ========================================================================
 
 # Set the DESIGNS environment variable to the 'designs' subdirectory of the current directory
@@ -114,6 +119,23 @@ if [[ ${CONTAINER_GROUP} -ne 0 ]]  && [[ ${CONTAINER_GROUP} -lt 1000 ]]; then
         echo
 fi
 
+# Adding support for gLayout installation
+if [[ ${GLAYOUT_INSTALL} == 1 ]]; then
+
+	if [ -z ${GLAYOUT_REPOSITORY+z} ]; then
+		GLAYOUT_REPOSITORY="git@github.com:ReaLLMASIC/gLayout.git"
+	fi
+
+	if [ -z ${GLAYOUT_FOLDER+z} ]; then
+		GLAYOUT_REPOSITORY="gLayout"
+	fi
+
+	if [ -z ${GLAYOUT_PATH+z} ]; then
+		GLAYOUT_PATH="libs"
+	fi
+  
+fi
+
 # Processing ports and other parameters
 PARAMS=""
 if [ "$WEBSERVER_PORT" -gt 0 ]; then
@@ -134,6 +156,23 @@ fi
 
 if [ -n "${IIC_OSIC_TOOLS_QUIET}" ]; then
 	DOCKER_EXTRA_PARAMS="${DOCKER_EXTRA_PARAMS} -e IIC_OSIC_TOOLS_QUIET=1"
+fi
+
+
+if [[ ${GLAYOUT_INSTALL} == 1 ]]; then
+
+	if [ -n ${GLAYOUT_REPOSITORY} ]; then
+		DOCKER_EXTRA_PARAMS="${DOCKER_EXTRA_PARAMS} -e GLAYOUT_REPOSITORY=${GLAYOUT_REPOSITORY}"
+	fi
+
+	if [ -n ${GLAYOUT_FOLDER} ]; then
+		DOCKER_EXTRA_PARAMS="${DOCKER_EXTRA_PARAMS} -e GLAYOUT_FOLDER=${GLAYOUT_FOLDER}"
+	fi
+
+	if [ -n ${GLAYOUT_PATH} ]; then
+		DOCKER_EXTRA_PARAMS="${DOCKER_EXTRA_PARAMS} -e GLAYOUT_PATH=${GLAYOUT_PATH}"
+	fi
+  
 fi
 
 if [ -n "${DOCKER_EXTRA_PARAMS}" ]; then
@@ -174,4 +213,20 @@ else
 	# Disable SC2086, $PARAMS must be globbed and splitted.
 	# shellcheck disable=SC2086
 	${ECHO_IF_DRY_RUN} docker run -d --user "${CONTAINER_USER}:${CONTAINER_GROUP}" $PARAMS -v "$DESIGNS:/foss/designs:rw" --name "${CONTAINER_NAME}" "${DOCKER_USER}/${DOCKER_IMAGE}:${DOCKER_TAG}" > /dev/null
+fi
+
+if [[ ${GLAYOUT_INSTALL} == 1 ]]; then
+	
+	# extra steps for gLayout
+	if [ -d "${DESIGNS}/${GLAYOUT_PATH}/${GLAYOUT_FOLDER}" ]; then
+		echo "[INFO] gLayout folder exists in repo. Skipping."
+	else
+		echo "[INFO] adding gLayout as submodule"
+		cd ${DESIGNS}/${GLAYOUT_PATH}
+		git submodule add ${GLAYOUT_REPOSITORY} ${GLAYOUT_FOLDER}
+		git submodule update --init --recursive
+
+		echo "[INFO] Selected repository ${GLAYOUT_REPOSITORY} added and initialized successfully. Please to install it, execute run_GL.sh inside the docker container."
+	fi
+
 fi
